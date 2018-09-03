@@ -1,0 +1,23 @@
+{
+  "name": "home-automation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"cd server && yarn start\" \"cd client && yarn start\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ziller321/home-automation.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ziller321/home-automation/issues"
+  },
+  "homepage": "https://github.com/Ziller321/home-automation#readme",
+  "dependencies": {
+    "concurrently": "^4.0.1"
+  }
+}

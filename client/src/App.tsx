@@ -34,6 +34,10 @@ class App extends React.Component<{}, IState> {
     window.io.emit('go-to-sleep', { time: 5000 })
   }
 
+  public runTest = () => {
+    window.io.emit('runTest', {})
+  }
+
   public render() {
     return (
       <AppWrapper>
@@ -41,6 +45,7 @@ class App extends React.Component<{}, IState> {
 
         <Content>
           <Button variant="contained" color="primary" onClick={this.goToSleep}>Nukkumaan</Button>
+          <Button variant="contained" color="primary" onClick={this.runTest}>Run test</Button>
           {/* <Scenes /> */}
           <Lights />
         </Content>
