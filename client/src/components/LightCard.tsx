@@ -2,73 +2,88 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
+import { Commands } from "api/main"
 import { ILight } from "node-hue-api";
 import * as React from "react"
-import { ColorResult, SliderPicker } from 'react-color';
+import { RGBColor, ColorResult, SliderPicker } from 'react-color';
 import { Socket } from './Socket'
 
 
 interface IProps {
-  light: ILight
+    light: ILight
 }
 
-export class LightCard extends React.Component<IProps, {}> {
+interface IState {
+    color?: RGBColor
+}
 
+export class LightCard extends React.Component<IProps, IState> {
 
-  public toggleLight = async () => {
-    const { light } = this.props
-    const commands = {
-      ligths: [{
-        actions: ['toggle'],
-        id: light.id,
-      }]
-    };
-    window.io.emit(`runCommands`, {
-      commands
-    })
-  }
+    public state = {
+        color: undefined
+    }
 
-  public setColor = (color: ColorResult) => {
-    const { light } = this.props
-    const commands = {
-      ligths: [
-        {
-          actions: [{ action: 'setColor', value: { r: color.rgb.r, g: color.rgb.g, b: color.rgb.b } }],
-          id: light.id,
+    public toggleLight = async () => {
+        const { light } = this.props
 
-        }
-      ]
-    };
-    window.io.emit(`runCommands`, {
-      commands
-    })
-  }
+        const commands: Commands = {
+            ligths: [{
+                commands: [{ toggle: true }],
+                id: String(light.id),
+            }]
+        };
+        window.io.emit(`runCommands`, {
+            commands
+        })
+    }
 
-  public render() {
-    const { light } = this.props
-    return (
-      <Socket event={`light-status-${this.props.light.id}`}>
-        {
-          (data: ILight) => (
-            <Card>
-              <CardContent>
-                <Typography color="textSecondary">
-                  {light.name}
-                </Typography>
+    public setColor = (color: ColorResult) => {
+        const { light } = this.props
+        const { r, g, b } = color.rgb;
+        const commands = {
+            ligths: [
+                {
+                    commands: [{ setColor: { r, g, b } }],
+                    id: light.id,
 
-                <Switch
-                  onChange={this.toggleLight}
-                  checked={data.state.on}
-                />
+                }
+            ]
+        };
 
-                <SliderPicker onChangeComplete={this.setColor} />
+        this.setState({
+            color: color.rgb
+        })
+        window.io.emit(`runCommands`, {
+            commands
+        })
+    }
 
-              </CardContent>
-            </Card>
-          )
-        }
-      </Socket>
+    public render() {
+        const { light } = this.props
+        const { color } = this.state
+        return (
+            <Socket event={`light-status-${this.props.light.id}`}>
+                {
+                    (data: ILight) => (
+                        <Card>
+                            <CardContent>
+                                <Typography color="textSecondary">
+                                    {light.name}
+                                </Typography>
 
-    )
-  }
+                                <Switch
+                                    onChange={this.toggleLight}
+                                    checked={data.state.on}
+                                />
+
+                                <SliderPicker color={color} onChangeComplete={this.setColor} />
+
+                            </CardContent>
+                        </Card>
+                    )
+                }
+            </Socket>
+
+        )
+    }
 }

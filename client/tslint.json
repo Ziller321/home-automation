@@ -7,7 +7,10 @@
   "rules": {
     "jsx-no-lambda": false,
     "no-console": false,
-    "interface-name": false
+    "interface-name": false,
+    "ordered-imports": false,
+    "member-ordering": false,
+    "object-literal-sort-keys": false
   },
   "linterOptions": {
     "exclude": [
